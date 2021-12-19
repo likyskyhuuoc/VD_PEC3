@@ -1,0 +1,91 @@
+---
+title: "xcai_PEC3"
+author: "Xiaowei Cai"
+date: "2021/12/18"
+output: 
+  html_document:
+    df_print: paged
+    code_folding: hide
+    theme: cerulean
+    toc: yes
+    toc_float: yes
+---
+
+# Introduction
+
+This work is for the PEC3 of the course "Data visualisation", provided by the Universitat Oberta de Catalunya.
+
+The 3D plot is visualised in the R programming environment. 
+
+The dataset is from: https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv
+
+The R code is modified from the following source: https://plotly.com/r/3d-scatter-plots/
+
+# Preparation
+
+Load the library "plotly".
+
+```{r, message = FALSE,warning=FALSE}
+library(plotly)
+```
+
+Load the dataset.
+
+```{r}
+#Download the dataset
+#dataset <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv")
+#Save the dataset in the local computer.
+#write.csv(dataset, "life_expectancy.csv", row.names = FALSE)
+
+#Load the dataset.
+dataset <- read.csv("life_expectancy.csv", encoding = "UTF-8",stringsAsFactors=FALSE)
+```
+
+# Configure the parameters
+
+Configure the parameters for the plot.
+
+```{r}
+#Configure the parameters for the plot.
+dataset_2007 <- dataset[which(dataset$year == 2007),]
+dataset_2007 <- dataset_2007[order(dataset_2007$continent, dataset_2007$country),]
+dataset_2007$size <- dataset_2007$pop
+colors <- c('#239B56', '#1972A4', '#FF7070', '#965F8A', '#C61951')
+
+fig <- plot_ly(dataset_2007, x = ~gdpPercap, y = ~lifeExp, z = ~pop, color = ~continent, size = ~size, colors = colors,
+               marker = list(symbol = 'circle', sizemode = 'diameter'), sizes = c(5, 150),
+               text = ~paste('Country:', country, '<br>Life Expectancy:', lifeExp, '<br>GDP:', gdpPercap,
+                             '<br>Pop.:', pop))
+fig <- fig %>% layout(title = 'Life Expectancy, GDP per capita, and population in 142 countries in 2007',
+                      scene = list(xaxis = list(title = 'GDP per capita (2000 dollars)',
+                                                gridcolor = 'rgb(255, 255, 255)',
+                                                range = c(2.003297660701705, 5.191505530708712),
+                                                type = 'log',
+                                                zerolinewidth = 1,
+                                                ticklen = 5,
+                                                gridwidth = 2),
+                                   yaxis = list(title = 'Life Expectancy (years)',
+                                                gridcolor = 'rgb(255, 255, 255)',
+                                                range = c(36.12621671352166, 91.72921793264332),
+                                                zerolinewidth = 1,
+                                                ticklen = 5,
+                                                gridwith = 2),
+                                   zaxis = list(title = 'Population',
+                                                gridcolor = 'rgb(255, 255, 255)',
+                                                type = 'log',
+                                                zerolinewidth = 1,
+                                                ticklen = 5,
+                                                gridwith = 2)),
+                      paper_bgcolor = 'rgb(243, 243, 243)',
+                      plot_bgcolor = 'rgb(243, 243, 243)')
+```
+
+# Visualisation
+
+Visualise the 3D Bubble Plot.
+
+```{r, message = FALSE,warning=FALSE}
+#Visualise the dynamic plot.
+fig
+```
+
